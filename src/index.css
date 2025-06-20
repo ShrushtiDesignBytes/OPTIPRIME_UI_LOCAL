@@ -1,0 +1,171 @@
+/* App.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar using Tailwind's @layer */
+@layer base {
+  html {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: #0a3d38 #030f0e;
+    /* Firefox */
+    background: #030f0e;
+  }
+
+  body {
+    @apply select-none;
+  }
+
+  body::-webkit-scrollbar {
+    width: 8px;
+    /* Scrollbar width */
+  }
+
+  body::-webkit-scrollbar-track {
+    background: #030f0e;
+    /* Track color */
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background-color: #0a3d38;
+    /* Thumb color */
+    border-radius: 8px;
+    /* Thumb border-radius */
+    border: 2px solid #030f0e;
+    /* Optional space around the thumb */
+  }
+
+  body::-webkit-scrollbar-thumb:hover {
+    background-color: #0a3d38;
+    /* Hover color */
+  }
+}
+
+.custom-body {
+  @apply font-poppins scroll-smooth min-h-screen w-full;
+
+  /* Full-screen background */
+  background: linear-gradient(
+    to top right,
+    #204d4c 0%,
+    #0a1517 40%,
+    #0a1517 60%,
+    #204d4c 100%
+  );
+  background-color: #062a30;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  /* Ensures it covers the entire screen */
+  min-height: 100vh;
+  height: auto;
+  /* Allows scrolling if content overflows */
+
+  /* Scrollbar styling */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  /* Makes the scrollbar thinner */
+  scrollbar-color: #0a3d38 #0f544c;
+  /* Thumb & track color */
+}
+
+.custom-body::-webkit-scrollbar {
+  width: 12px;
+  /* Width of the scrollbar */
+}
+
+.custom-body::-webkit-scrollbar-track {
+  background: #0f544c;
+  /* Background of the scrollbar track */
+  border-radius: 10px;
+  /* Round track corners */
+}
+
+.custom-body::-webkit-scrollbar-thumb {
+  background: #0a3d38;
+  /* Color of the scrollbar thumb */
+  border-radius: 10px;
+  /* Round thumb corners */
+}
+
+.custom-body::-webkit-scrollbar-thumb:hover {
+  background: #68bfb6;
+  /* Color of the thumb on hover */
+}
+
+body {
+  @apply font-poppins;
+  /* Apply the Poppins font globally */
+}
+
+.tooltip {
+  @apply absolute bg-white border border-gray-300 rounded-md p-2 text-xs opacity-0 pointer-events-none transition-opacity duration-300;
+}
+
+/* Custom scrollbar */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #0a3d38 #0f544c;
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #0a3d38;
+  border-radius: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background-color: #0f544c;
+}
+
+.severity-alert::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #57eb66;
+  margin-right: 8px;
+}
+
+.severity-shutdown::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #eb5757;
+  margin-right: 8px;
+}
+
+.progress-4 {
+  width: 300px;
+  height: 30px;
+  -webkit-mask: linear-gradient(90deg, #0d6ed9 50%, #00000000 0) 0/10%;
+  background: linear-gradient(#0d6ed9 0 0) 0/0% no-repeat #ddd;
+  animation: p4 5s infinite steps(5);
+  /* Adjust steps to 5 */
+}
+
+@keyframes p4 {
+  0% {
+    background-size: 0% 100%;
+  }
+
+  100% {
+    background-size: 50% 100%;
+    /* Fill only 5 bars (50%) */
+  }
+}
+
+/* Reset box-sizing and other styles */
+* {
+  box-sizing: border-box;
+}

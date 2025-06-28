@@ -22,29 +22,32 @@ import TriangleIcon from "../assets/Icon-triangle.png";
 import OrangeDot from "../assets/orange_dot.png";
 import Annotation from "../assets/annotation-info.png";
 import PhoneCall from "../assets/phone_call.png";
+import BreakerOpen from '../assets/breakeropen.png';
+import BreakerClose from '../assets/breakerclose.png';
 
 const Generator_A = ({
   datas,
-  BASEURL,
-  status,
-  SERVERURL,
   setId,
-  fetchStatus,
+  isOn_A,
+  showDialog_A,
+  showSuccessDialog_A,
+  showStopDialog_A,
+  errorAlertOpen_A,
+  errorMessage_A,
+  isInCooldown_A,
+  cooldownTimeLeft_A,
+  isInWarmup_A,
+  warmupTimeLeft_A,
+  toggleSwitch_A,
+  openDialog_A,
+  closeDialog_A,
+  closeStopDialog_A,
+  closeSuccessDialog_A,
+  showErrorAlert_A
 }) => {
-  const [isOn, setIsOn] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [showStopDialog, setShowStopDialog] = useState(false);
+
   const [alertOpen, setAlertOpen] = useState(false);
   const [deviceInfoOpen, setDeviceInfoOpen] = useState(false);
-
-  // cooldown & warmup state variables
-  const [errorAlertOpen, setErrorAlertOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isInCooldown, setIsInCooldown] = useState(false);
-  const [cooldownTimeLeft, setCooldownTimeLeft] = useState(0);
-  const [isInWarmup, setIsInWarmup] = useState(false);
-  const [warmupTimeLeft, setWarmupTimeLeft] = useState(0);
 
   const myDatavizRef = useRef(null);
   const { id } = useParams();
@@ -52,261 +55,6 @@ const Generator_A = ({
   useEffect(() => {
     setId(id || 1);
   }, [id]);
-
-  useEffect(() => {
-    if (status) {
-      setIsOn(status.genset1Status);
-
-      // Handle cooldown information
-      if (status.genset1Cooldown > 0) {
-        setIsInCooldown(true);
-        const timeLeft = Math.ceil(status.genset1Cooldown / 60000);
-        setCooldownTimeLeft(timeLeft);
-      } else {
-        setIsInCooldown(false);
-        setCooldownTimeLeft(0);
-      }
-
-      // Handle warmup information
-      if (status.genset1Warmup > 0) {
-        setIsInWarmup(true);
-        const timeLeft = Math.ceil(status.genset1Warmup / 60000);
-        setWarmupTimeLeft(timeLeft);
-      } else {
-        setIsInWarmup(false);
-        setWarmupTimeLeft(0);
-      }
-    }
-  }, [status]);
-
-  const showErrorAlert = (message) => {
-    setErrorMessage(message);
-    setErrorAlertOpen(true);
-    setTimeout(() => {
-      setErrorAlertOpen(false);
-    }, 5000);
-  };
-
-  const fetchStatusLocal = async () => {
-    try {
-      const response = await fetch(`${BASEURL}/status/${id}`);
-      const status = await response.json();
-      return status;
-    } catch (error) {
-      console.error("Error fetching status:", error);
-      showErrorAlert("Failed to fetch latest status.");
-      return null;
-    }
-  };
-
-  const updateStatusON = async () => {
-    try {
-      const response = await fetch(`${BASEURL}/status/${id}`);
-      const latestStatus = await response.json();
-
-      if (latestStatus.genset1Cooldown > 0) {
-        const timeLeft = Math.ceil(latestStatus.genset1Cooldown / 60000);
-        showErrorAlert(
-          `Genset 1 cannot be turned on yet. Please wait ${timeLeft} minutes.`
-        );
-        return false;
-      }
-
-      const optimisticData = {
-        genset1Status: true,
-        genset12Status: true, // At least one genset is on, so genset12Status is true
-        flag: "HMI",
-      };
-
-      console.log("Updating status to ON:", optimisticData);
-
-      const fetchOptions = {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(optimisticData),
-      };
-
-      // Perform both fetch requests in parallel
-      const [localResponse, serverResponse] = await Promise.all([
-        fetch(`${BASEURL}/status/${id}`, fetchOptions),
-        fetch(`${SERVERURL}/status/${id}`, fetchOptions).catch(
-          (serverError) => {
-            return { ok: false, error: serverError };
-          }
-        ),
-      ]);
-
-      // Handle local response
-      const localData = await localResponse.json();
-      if (!localResponse.ok) {
-        if (
-          localData.message &&
-          (localData.source === "genset1" || localData.source === "genset12")
-        ) {
-          showErrorAlert(localData.message);
-          return false;
-        }
-        throw new Error(
-          `Local update failed: ${localData.message || "Unknown error"}`
-        );
-      }
-      console.log("Local update data:", localData);
-
-      // Handle server response
-      if (serverResponse.ok) {
-        const serverData = await serverResponse.json();
-        console.log("Server update data:", serverData);
-      } else {
-        console.error(
-          "Server update failed:",
-          serverResponse.error || "Unknown error"
-        );
-      }
-
-      await fetchStatus();
-      return true;
-    } catch (error) {
-      console.error("Error updating status:", error);
-      showErrorAlert(`Failed to turn on Generator A: ${error.message}`);
-      return false;
-    }
-  };
-
-  const updateStatusOFF = async () => {
-    try {
-      const response = await fetch(`${BASEURL}/status/${id}`);
-      const latestStatus = await response.json();
-
-      if (latestStatus.genset1Warmup > 0) {
-        const timeLeft = Math.ceil(latestStatus.genset1Warmup / 60000);
-        showErrorAlert(
-          `Genset 1 cannot be turned off yet. Please wait ${timeLeft} minutes.`
-        );
-        return false;
-      }
-
-      const optimisticData = {
-        genset1Status: false,
-        genset12Status: latestStatus.genset2Status, // True if genset2 is on, false if both are off
-        flag: "HMI",
-      };
-
-      console.log("Updating status to OFF:", optimisticData);
-
-      const fetchOptions = {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(optimisticData),
-      };
-
-      // Perform both fetch requests in parallel
-      const [localResponse, serverResponse] = await Promise.all([
-        fetch(`${BASEURL}/status/${id}`, fetchOptions),
-        fetch(`${SERVERURL}/status/${id}`, fetchOptions).catch(
-          (serverError) => {
-            return { ok: false, error: serverError };
-          }
-        ),
-      ]);
-
-      // Handle local response
-      const localData = await localResponse.json();
-      if (!localResponse.ok) {
-        if (
-          localData.message &&
-          (localData.source === "genset1" || localData.source === "genset12")
-        ) {
-          showErrorAlert(localData.message);
-          return false;
-        }
-        throw new Error(
-          `Local update failed: ${localData.message || "Unknown error"}`
-        );
-      }
-      console.log("Local update data:", localData);
-
-      // Handle server response
-      if (serverResponse.ok) {
-        const serverData = await serverResponse.json();
-        console.log("Server update data:", serverData);
-      } else {
-        console.error(
-          "Server update failed:",
-          serverResponse.error || "Unknown error"
-        );
-      }
-
-      await fetchStatus();
-      return true;
-    } catch (error) {
-      console.error("Error updating status:", error);
-      showErrorAlert(`Failed to turn off Generator A: ${error.message}`);
-      return false;
-    }
-  };
-
-  const toggleSwitch = async () => {
-    const newIsOn = !isOn;
-    setShowDialog(false);
-
-    // Fetch the latest status before toggling
-    const latestStatus = await fetchStatusLocal();
-    if (!latestStatus) return;
-
-    if (newIsOn) {
-      if (isInCooldown) {
-        showErrorAlert(
-          `Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft} minutes.`
-        );
-        return;
-      }
-      const success = await updateStatusON();
-      if (success) {
-        setIsOn(true);
-        setShowSuccessDialog(true);
-      }
-    } else {
-      if (isInWarmup) {
-        showErrorAlert(
-          `Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft} minutes.`
-        );
-        return;
-      }
-      const success = await updateStatusOFF();
-      if (success) {
-        setIsOn(false);
-        setShowStopDialog(true);
-      }
-    }
-  };
-
-  const closeDialog = () => {
-    setShowDialog(false);
-  };
-
-  const closeSuccessDialog = () => {
-    setShowSuccessDialog(false);
-  };
-
-  const closeStopDialog = () => {
-    setShowStopDialog(false);
-  };
-
-  const openDialog = () => {
-    if (isInCooldown && !isOn) {
-      showErrorAlert(
-        `Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft} more minutes.`
-      );
-      return;
-    }
-    if (isInWarmup && isOn) {
-      showErrorAlert(
-        `Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft} more minutes.`
-      );
-      return;
-    }
-    setShowDialog(true);
-  };
 
   const data = [
     { time: "JAN", value: 3 },
@@ -379,7 +127,8 @@ const Generator_A = ({
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x).tickSizeOuter(0))
       .selectAll("text")
-      .style("fill", "white");
+      .style("fill", "white")
+      .style("font-size", window.innerWidth >= 1920 ? "14px" : "10px");
 
     // Add Y axis
     const y = d3
@@ -488,13 +237,13 @@ const Generator_A = ({
   }
 
   return (
-    <div className="relative flex justify-between max-w-[100%] gap-5 p-5 h-auto">
-      <div className="flex-col w-[70%] p-2">
+    <div className="grid grid-cols-[69%_30%] gap-5 h-auto">
+      <div className="flex-col p-5">
         <div className="inline-flex items-center">
           <Link to="/">
             <button
               id="dashboardGeneratorBtn"
-              className="bg-transparent text-sm text-[#DDDDDD] font-medium"
+              className="bg-transparent text-sm xl:text-base text-[#DDDDDD] font-medium"
             >
               Dashboard
             </button>
@@ -508,83 +257,103 @@ const Generator_A = ({
         </div>
         <div className="flex justify-between flex-[50] mt-5">
           <div className="whitespace-nowrap">
-            <h3 className="font-semibold tracking-wider text-lg text-[#DDDDDD]">
+            <h3 className="font-semibold tracking-wider text-lg xl:text-xl text-[#DDDDDD]">
               GENERATOR IRC231GHX
             </h3>
           </div>
 
-          <div className="flex items-center justify-center">
-            <div className="flex items-center justify-center">
-              <img src={Thermometer} alt="temp" className="w-5 h-5 mt-1" />
-              <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm font-normal">
+          <div className="relative flex items-center justify-center">
+            <div className="flex items-center justify-center gap-2">
+              <img src={Thermometer} alt="temp" className="w-5 h-5 xl:w-6 xl:h-6" />
+              <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
                 32°C
               </h3>
             </div>
 
+
             <div className="flex items-center justify-center">
-              <img src={Image_1} alt="battery" className="w-5 h-5 mt-1" />
-              <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm font-normal">
-                32%
-              </h3>
+              <div className="flex items-center justify-center gap-2">
+                <img src={Image_1} alt="battery" className="w-5 h-5 xl:w-6 xl:h-6" />
+                <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                  32%
+                </h3>
+              </div>
             </div>
+
+            {isOn_A ? <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center gap-2">
+                <img src={BreakerClose} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                  Close
+                </h3>
+              </div>
+            </div>
+
+              : <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center gap-2">
+                  <img src={BreakerOpen} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                  <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                    Open
+                  </h3>
+                </div>
+              </div>}
+
 
             <div className="mt-1">
               {/* Cooldown indicator */}
-              {isInCooldown && !isOn && (
-                <div className="mb-2 p-2 bg-yellow-500 text-white rounded text-sm">
-                  Cooldown: {cooldownTimeLeft} minute(s) remaining
+              {isInCooldown_A && !isOn_A && (
+                <div className="absolute bottom-7 right-2 mb-2 px-4 py-2 bg-yellow-500 text-white rounded text-sm xl:text-base w-fit whitespace-nowrap">
+                  Cooldown: {cooldownTimeLeft_A} minute(s) remaining
                 </div>
               )}
 
+
               {/* Warmup indicator */}
-              {isInWarmup && isOn && (
-                <div className="mb-2 p-2 bg-blue-500 text-white rounded text-sm">
-                  Warmup: {warmupTimeLeft} minute(s) remaining
+              {isInWarmup_A && isOn_A && (
+                <div className="absolute bottom-7 right-2 w-fit whitespace-nowrap mb-2 px-4 py-2 bg-blue-500 text-white rounded text-sm xl:text-base">
+                  Warmup: {warmupTimeLeft_A} minute(s) remaining
                 </div>
               )}
 
               {/* Toggle switch with disabled styling during cooldown or warmup */}
               <div
-                className={`w-14 h-7 rounded-full relative transition-all duration-300 ${
-                  isOn ? "bg-green-500" : "bg-gray-400"
-                } ${
-                  (isInCooldown && !isOn) || (isInWarmup && isOn)
+                className={`w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_A ? "bg-green-500" : "bg-gray-400"
+                  } ${(isInCooldown_A && !isOn_A) || (isInWarmup_A && isOn_A)
                     ? "opacity-50 cursor-not-allowed"
                     : "cursor-pointer"
-                }`}
+                  }`}
                 onClick={
-                  (isInCooldown && !isOn) || (isInWarmup && isOn)
+                  (isInCooldown_A && !isOn_A) || (isInWarmup_A && isOn_A)
                     ? () => {
-                        if (isInCooldown && !isOn) {
-                          showErrorAlert(
-                            `Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft} more minutes.`
-                          );
-                        } else if (isInWarmup && isOn) {
-                          showErrorAlert(
-                            `Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft} more minutes.`
-                          );
-                        }
+                      if (isInCooldown_A && !isOn_A) {
+                        showErrorAlert_A(
+                          `Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft_A} more minutes.`
+                        );
+                      } else if (isInWarmup_A && isOn_A) {
+                        showErrorAlert_A(
+                          `Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft_A} more minutes.`
+                        );
                       }
-                    : openDialog
+                    }
+                    : openDialog_A
                 }
               >
                 <div
-                  className={`w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${
-                    isOn ? "translate-x-7" : "translate-x-0"
-                  }`}
+                  className={`w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${isOn_A ? "translate-x-7" : "translate-x-0"
+                    }`}
                 ></div>
               </div>
 
               {/* Error Alert */}
-              {errorAlertOpen && (
+              {errorAlertOpen_A && (
                 <div className="fixed top-5 right-5 bg-red-500 text-white p-3 rounded shadow-lg z-50 max-w-md">
-                  {errorMessage}
+                  {errorMessage_A}
                 </div>
               )}
             </div>
 
             {/* Dialog Alert */}
-            {showDialog && (
+            {showDialog_A && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
                   <div className="flex justify-between items-center">
@@ -597,7 +366,7 @@ const Generator_A = ({
                     </div>
                     <button
                       className="text-white w-8 h-8"
-                      onClick={closeDialog}
+                      onClick={closeDialog_A}
                     >
                       x
                     </button>
@@ -612,7 +381,7 @@ const Generator_A = ({
                       <p className="text-white text-xl font-semibold mt-4">
                         Are you sure?
                       </p>
-                      {isOn ? (
+                      {isOn_A ? (
                         <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
                           Do you really want to Stop the genset?
                         </p>
@@ -625,14 +394,14 @@ const Generator_A = ({
                   </div>
                   <div className="flex gap-2 mt-7">
                     <button
-                      className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 rounded-md text-base font-semibold w-full"
-                      onClick={closeDialog}
+                      className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                      onClick={closeDialog_A}
                     >
                       Cancel
                     </button>
                     <button
-                      className="bg-[#19988B] text-white px-3 py-1 rounded-md text-base font-semibold w-full"
-                      onClick={toggleSwitch}
+                      className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                      onClick={toggleSwitch_A}
                     >
                       Yes
                     </button>
@@ -640,13 +409,13 @@ const Generator_A = ({
                 </div>
               </div>
             )}
-            {showSuccessDialog && (
+            {showSuccessDialog_A && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
                   <div className="flex justify-end">
                     <button
                       className="text-white w-8 h-8"
-                      onClick={closeSuccessDialog}
+                      onClick={closeSuccessDialog_A}
                     >
                       x
                     </button>
@@ -676,13 +445,13 @@ const Generator_A = ({
                 </div>
               </div>
             )}
-            {showStopDialog && (
+            {showStopDialog_A && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
                   <div className="flex justify-end">
                     <button
                       className="text-white w-8 h-8"
-                      onClick={closeStopDialog}
+                      onClick={closeStopDialog_A}
                     >
                       x
                     </button>
@@ -714,7 +483,7 @@ const Generator_A = ({
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full mt-5 bg-gradient-to-tr from-[#0A1517] via-[#0A1517] to-[#204d4c] rounded-lg p-3">
+        <div className="flex flex-col w-full gap-4 mt-5 bg-gradient-to-tr from-[#0A1517] via-[#0A1517] to-[#204d4c] rounded-lg p-3">
           {/* Generator Details */}
           <div className="flex flex-col md:flex-row w-full ">
             {/* Left Side: Image */}
@@ -757,11 +526,11 @@ const Generator_A = ({
                 },
               ].map((item, index) => (
                 <div key={index} className="flex justify-between py-2">
-                  <p className="text-[#DDDDDD] font-medium text-sm opacity-60">
+                  <p className="text-[#DDDDDD] font-medium text-sm xl:text-base opacity-60">
                     {item.label}
                   </p>
                   <p
-                    className="text-[#DDDDDD] font-medium text-sm"
+                    className="text-[#DDDDDD] font-medium text-sm xl:text-base"
                     id={item.id}
                   >
                     {item.value}
@@ -772,13 +541,13 @@ const Generator_A = ({
           </div>
 
           {/* Running Time Stats */}
-          <div className="flex items-center p-4 mr-7">
+          <div className="flex items-center p-4 mr-7 ">
             {/* Running Time */}
             <div className="flex flex-col items-start space-y-1 border-r border-[#204D4C] pr-10 pl-5">
-              <img src={Run_Time} alt="Running Time" className="w-5 h-5" />
-              <p className="text-[#C37C5A] text-sm font-medium">Running Time</p>
+              <img src={Run_Time} alt="Running Time" className="w-5 h-5 xl:w-8 xl:h-8" />
+              <p className="text-[#C37C5A] text-sm xl:text-lg font-medium">Running Time</p>
               <p
-                className="text-[#DDDDDD] text-2xl font-semibold"
+                className="text-[#DDDDDD] text-2xl xl:text-3xl font-semibold"
                 id="runningTimeGenset1"
               >
                 {datas && datas.genset1.batteryVoltage} mins
@@ -787,10 +556,10 @@ const Generator_A = ({
 
             {/* Frequency */}
             <div className="flex flex-col items-start space-y-1 border-r border-[#204D4C] px-10">
-              <img src={Run_Frequency} alt="Frequency" className="w-5 h-5" />
-              <p className="text-[#C37C5A] text-sm font-medium">Frequency</p>
+              <img src={Run_Frequency} alt="Frequency" className="w-5 h-5 xl:w-8 xl:h-8" />
+              <p className="text-[#C37C5A] text-sm xl:text-lg font-medium">Frequency</p>
               <p
-                className="text-[#DDDDDD] text-2xl font-semibold"
+                className="text-[#DDDDDD] text-2xl xl:text-3xl font-semibold"
                 id="frequencyGenset1"
               >
                 {datas && datas.genset1.freq} Hz
@@ -799,10 +568,10 @@ const Generator_A = ({
 
             {/* Engine RPM */}
             <div className="flex flex-col items-start space-y-1 border-r border-[#204D4C] px-10">
-              <img src={Run_Engine} alt="Engine RPM" className="w-5 h-5" />
-              <p className="text-[#C37C5A] text-sm font-medium">Engine RPM</p>
+              <img src={Run_Engine} alt="Engine RPM" className="w-5 h-5 xl:w-8 xl:h-8" />
+              <p className="text-[#C37C5A] text-sm xl:text-lg font-medium">Engine RPM</p>
               <p
-                className="text-[#DDDDDD] text-2xl font-semibold"
+                className="text-[#DDDDDD] text-2xl xl:text-3xl font-semibold"
                 id="engineRpmGenset1"
               >
                 {datas && datas.genset1.engineRpm}
@@ -811,10 +580,10 @@ const Generator_A = ({
 
             {/* Coolant Temp */}
             <div className="flex flex-col items-start space-y-1 border-r border-[#204D4C] px-10">
-              <img src={Run_Coolant} alt="Coolant Temp" className="w-5 h-5" />
-              <p className="text-[#C37C5A] text-sm font-medium">Coolant Temp</p>
+              <img src={Run_Coolant} alt="Coolant Temp" className="w-5 h-5 xl:w-8 xl:h-8" />
+              <p className="text-[#C37C5A] text-sm xl:text-lg font-medium">Coolant Temp</p>
               <p
-                className="text-[#DDDDDD] text-2xl font-semibold"
+                className="text-[#DDDDDD] text-2xl xl:text-3xl font-semibold"
                 id="coolantTempGenset1"
               >
                 {datas && datas.genset1.coolerTemp}°C
@@ -823,12 +592,12 @@ const Generator_A = ({
 
             {/* Lube Oil Pressure */}
             <div className="flex flex-col items-start space-y-1 px-10">
-              <img src={Run_Lube} alt="Lube Oil Pressure" className="w-5 h-5" />
-              <p className="text-[#C37C5A] text-sm font-medium">
+              <img src={Run_Lube} alt="Lube Oil Pressure" className="w-5 h-5 xl:w-8 xl:h-8" />
+              <p className="text-[#C37C5A] text-sm xl:text-lg font-medium">
                 Lube Oil Pressure
               </p>
               <p
-                className="text-[#DDDDDD] text-2xl font-semibold"
+                className="text-[#DDDDDD] text-2xl xl:text-3xl font-semibold"
                 id="lubeOilGenset1"
               >
                 {datas && datas.genset1.oilPressure} Psi
@@ -837,22 +606,22 @@ const Generator_A = ({
           </div>
         </div>
         <div className="flex justify-between mt-12 w-full">
-          <p className="text-lg font-semibold text-[#DDDDDD] tracking-wider">
-            Power consumption
+          <p className="text-lg xl:text-xl font-semibold text-[#DDDDDD] tracking-wider">
+            POWER CONSUMPTION
           </p>
-          <div className="inline-flex text-xs items-center">
+          <div className="inline-flex text-xs xl:text-sm items-center">
             <div className="flex text-[#DDDDDD] items-center">
-              <span className="bg-[#062A30] px-2 py-2 rounded-l-[4px] text-xs font-normal border-r-2 border-[#0A1517]">
+              <span className="bg-[#062A30] px-2 py-2 rounded-l-[4px] text-xs xl:text-sm font-normal border-r-2 border-[#0A1517]">
                 Today
               </span>
-              <span className="bg-[#062A30] px-2 py-2 text-xs font-normal">
+              <span className="bg-[#062A30] px-2 py-2 text-xs xl:text-sm font-normal">
                 Last 60 days
               </span>
             </div>
           </div>
         </div>
 
-        <div className="bg-black flex justify-center mb-5 rounded-lg mt-5 w-full p-4 h-[240px]">
+        <div className="bg-black flex justify-center mb-5 rounded-lg mt-5 w-full p-4 h-[240px] xl:h-[350px]">
           <div
             id="my_dataviz"
             ref={myDatavizRef}
@@ -860,7 +629,7 @@ const Generator_A = ({
           ></div>
         </div>
       </div>
-      <div>
+      {/* <div>
         <div className="absolute flex items-center justify-end cursor-pointer -end-2 -top-20 bg-[#172629] w-[30%] h-28">
           <div className="absolute mr-3 w-7 h-7 bg-[#062A30] rounded-full flex items-center justify-center top-5 end-12">
             <IoNotificationsOutline color="white" />
@@ -882,9 +651,9 @@ const Generator_A = ({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <div
-        className="absolute bg-[#172629] -end-2 w-[30%] h-[119vh] xl:h-[93vh] overflow-y-auto"
+        className=" bg-[#172629] h-full overflow-y-auto"
         style={{ scrollbarWidth: "none" }}
       >
         <div className="w-full mt-10">
@@ -901,9 +670,8 @@ const Generator_A = ({
                 </h4>
               </div>
               <div
-                className={`transition-transform ${
-                  alertOpen ? "rotate-180" : ""
-                } text-white`}
+                className={`transition-transform ${alertOpen ? "rotate-180" : ""
+                  } text-white`}
               >
                 <RiArrowDropDownLine className="w-8 h-8" />
               </div>
@@ -919,9 +687,9 @@ const Generator_A = ({
                         Start alert
                       </p>
                     </div>
-                    <div className="text-[#DDDDDD] text-xs">10:32 am</div>
+                    <div className="text-[#DDDDDD] text-xs xl:text-sm">10:32 am</div>
                   </div>
-                  <p className="text-[#DDDDDD] text-sm mt-2 ml-4">
+                  <p className="text-[#DDDDDD] text-sm xl:text-base mt-2 ml-4">
                     Optiprime started with 2 generator
                     <br /> configuration
                   </p>
@@ -934,9 +702,9 @@ const Generator_A = ({
                         Start alert
                       </p>
                     </div>
-                    <div className="text-[#DDDDDD] text-xs">10:32 am</div>
+                    <div className="text-[#DDDDDD] text-xs xl:text-sm">10:32 am</div>
                   </div>
-                  <p className="text-[#DDDDDD] text-sm mt-2 ml-4">
+                  <p className="text-[#DDDDDD] text-sm xl:text-base mt-2 ml-4">
                     Optiprime started with 2 generator
                     <br /> configuration
                   </p>
@@ -949,9 +717,9 @@ const Generator_A = ({
                         Start alert
                       </p>
                     </div>
-                    <div className="text-[#DDDDDD] text-xs">10:32 am</div>
+                    <div className="text-[#DDDDDD] text-xs xl:text-sm">10:32 am</div>
                   </div>
-                  <p className="text-[#DDDDDD] text-sm mt-2 ml-4">
+                  <p className="text-[#DDDDDD] text-sm xl:text-base mt-2 ml-4">
                     Optiprime started with 2 generator
                     <br /> configuration
                   </p>
@@ -964,9 +732,9 @@ const Generator_A = ({
                         Start alert
                       </p>
                     </div>
-                    <div className="text-[#DDDDDD] text-xs">10:32 am</div>
+                    <div className="text-[#DDDDDD] text-xs xl:text-sm">10:32 am</div>
                   </div>
-                  <p className="text-[#DDDDDD] text-sm mt-2 ml-4">
+                  <p className="text-[#DDDDDD] text-sm xl:text-base mt-2 ml-4">
                     Optiprime started with 2 generator
                     <br /> configuration
                   </p>
@@ -979,9 +747,9 @@ const Generator_A = ({
                         Start alert
                       </p>
                     </div>
-                    <div className="text-[#DDDDDD] text-xs">10:32 am</div>
+                    <div className="text-[#DDDDDD] text-xs xl:text-sm">10:32 am</div>
                   </div>
-                  <p className="text-[#DDDDDD] text-sm mt-2 ml-4">
+                  <p className="text-[#DDDDDD] text-sm xl:text-base mt-2 ml-4">
                     Optiprime started with 2 generator
                     <br /> configuration
                   </p>
@@ -1003,9 +771,8 @@ const Generator_A = ({
                 </h4>
               </div>
               <div
-                className={`transition-transform ${
-                  deviceInfoOpen ? "rotate-180" : ""
-                } text-white`}
+                className={`transition-transform ${deviceInfoOpen ? "rotate-180" : ""
+                  } text-white`}
               >
                 <RiArrowDropDownLine className="w-8 h-8" />
               </div>
@@ -1021,52 +788,52 @@ const Generator_A = ({
                 <div className="grid grid-cols-2 m-2 ml-3">
                   <div className="flex flex-col justify-start gap-5">
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-medium text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-medium text-sm xl:text-base opacity-50">
                         Location
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.deviceInfo.location}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-medium text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-medium text-sm xl:text-base opacity-50">
                         Sys Voltage
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.deviceInfo.sysVoltage}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-medium text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-medium text-sm xl:text-base opacity-50">
                         Cylinder
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.deviceInfo.cylinder}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-col justify-start gap-5">
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Battery Alternator
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.deviceInfo.batteryAlternator}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Intake air method
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.deviceInfo.intakeAir}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Type
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.deviceInfo.type}
                       </p>
                     </div>
@@ -1080,52 +847,52 @@ const Generator_A = ({
                 <div className="grid grid-cols-2 m-2 ml-3">
                   <div className="flex flex-col justify-start gap-5">
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Model & Make
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.systemInfo["mode&make"]}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Upcoming Maintanence
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.systemInfo.upcoming}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Intake air method
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.systemInfo.intakeAir}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-col justify-start gap-5">
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Date of Purchase
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.systemInfo.date}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Last Maintanence Date
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.systemInfo.lastmaintanence}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                      <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                         Type
                       </p>
-                      <p className="font-medium capitalize text-sm">
+                      <p className="font-medium capitalize text-sm xl:text-base">
                         {datas && datas.genset1.systemInfo.type}
                       </p>
                     </div>
@@ -1141,26 +908,26 @@ const Generator_A = ({
           <div className="flex items-center justify-between p-3 rounded-md">
             <div className="flex items-center">
               <img src={PhoneCall} alt="Box 5" className="w-6 h-6" />
-              <h4 className="text-[#DDDDDD] ml-2 text-base font-semibold tracking-wider">
-                Contact Information
+              <h4 className="text-[#DDDDDD] ml-2 text-base xl:text-lg font-semibold tracking-wider">
+                CONTACT INFORMATION
               </h4>
             </div>
           </div>
           <div className="grid grid-cols-2 m-2 ml-3">
             <div className="flex flex-col justify-start gap-5 text-white">
               <div className="flex flex-col gap-1">
-                <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                   Email ID
                 </p>
-                <p className="font-medium text-sm">admin@kirloskar.com</p>
+                <p className="font-medium text-sm xl:text-base">admin@kirloskar.com</p>
               </div>
             </div>
             <div className="flex flex-col justify-start gap-5 text-white">
               <div className="flex flex-col gap-1">
-                <p className="text-[#DDDDDD] font-normal text-sm opacity-50">
+                <p className="text-[#DDDDDD] font-normal text-sm xl:text-base opacity-50">
                   Mobile Number
                 </p>
-                <p className="font-medium text-sm">+91 9923 45678</p>
+                <p className="font-medium text-sm xl:text-base">+91 9923 45678</p>
               </div>
             </div>
           </div>

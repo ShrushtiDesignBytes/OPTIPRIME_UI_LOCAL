@@ -23,6 +23,11 @@ import Cold from "../assets/Cold.png";
 import Development from "../assets/Development.png";
 import { useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import BreakerOpen from '../assets/breakeropen.png';
+import BreakerClose from '../assets/breakerclose.png';
+import Featured_Icon from "../assets/Featured icon.png";
+import SuccessFullIcon from "../assets/Successful icon.png";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = ({
   datas,
@@ -31,7 +36,41 @@ const HomePage = ({
   status,
   setId,
   fetchStatus,
+  isOn_A,
+  showDialog_A,
+  showSuccessDialog_A,
+  showStopDialog_A,
+  errorAlertOpen_A,
+  errorMessage_A,
+  isInCooldown_A,
+  cooldownTimeLeft_A,
+  isInWarmup_A,
+  warmupTimeLeft_A,
+  toggleSwitch_A,
+  openDialog_A,
+  closeDialog_A,
+  closeStopDialog_A,
+  closeSuccessDialog_A,
+  showErrorAlert_A,
+  isOn_B,
+  showDialog_B,
+  showSuccessDialog_B,
+  showStopDialog_B,
+  errorAlertOpen_B,
+  errorMessage_B,
+  isInCooldown_B,
+  cooldownTimeLeft_B,
+  isInWarmup_B,
+  warmupTimeLeft_B,
+  toggleSwitch_B,
+  openDialog_B,
+  closeDialog_B,
+  closeStopDialog_B,
+  closeSuccessDialog_B,
+  showErrorAlert_B
 }) => {
+
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [isOn, setIsOn] = useState();
@@ -47,6 +86,8 @@ const HomePage = ({
   const [isInWarmup, setIsInWarmup] = useState(false);
   const [warmupTimeLeft, setWarmupTimeLeft] = useState(0);
 
+  //const [isToggleClicked_A, setisToggleClicked_A] = useState(false);
+  const [isToggleClicked_B, setisToggleClicked_B] = useState(false);
   const myDatavizRef = useRef(null);
   const location = useLocation();
 
@@ -628,56 +669,56 @@ const HomePage = ({
       <div className="flex-col gap-3">
         <div className="flex gap-3">
           <div className="inline-flex gap-8 items-center p-4 rounded-md w-full">
-            <div className="bg-[#051E1C] h-64 w-64 xl:h-72 xl:w-72 rounded-lg flex items-center justify-center">
+            <div className="bg-[#051E1C] h-64 w-64 xl:h-72 xl:w-96 rounded-lg flex items-center justify-center">
               <img
                 src={MaskGroup}
                 alt="Mask Group"
-                className="w-44 h-36 xl:w-48 xl:h-40"
+                className="w-44 h-36 xl:w-60 xl:h-48"
                 key={location.pathname}
               />
             </div>
             <div className="flex flex-col text-left gap-5">
-              <p className="text-lg font-semibold text-[#DDDDDD] ml-4 tracking-wider">
+              <p className="text-lg xl:text-xl font-semibold text-[#DDDDDD] ml-4 tracking-wider">
                 OPTIPRIME PARAMETERS
               </p>
               <div className="grid grid-cols-3 mt-4 w-full">
                 <div className="flex flex-col border-r border-[#204D4C] pr-5">
                   <div className="flex justify-start items-center">
                     <img src={Voltage} alt="Voltage" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
                       Voltage
                     </p>
                   </div>
                   <p
-                    className="text-[#DDDDDD] font-semibold text-[28px] ml-4 -mt-3"
+                    className="text-[#DDDDDD] font-semibold text-[28px] xl:text-[32px] ml-4 -mt-3"
                     id="voltageCommon"
                   >
                     {datas && datas.common.voltage} V
                   </p>
                 </div>
-                <div className="flex flex-col border-r border-[#204D4C] pl-8 pr-8 xl:pl-12 xl:pr-12">
+                <div className="flex flex-col border-r border-[#204D4C] pl-8 pr-8 xl:pl-14 xl:pr-16">
                   <div className="flex justify-start items-center">
                     <img src={Current} alt="Current" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
                       Current
                     </p>
                   </div>
                   <p
-                    className="text-[#DDDDDD] font-semibold text-[28px] ml-4 -mt-3"
+                    className="text-[#DDDDDD] font-semibold text-[28px] xl:text-[32px] ml-4 -mt-3"
                     id="currentACommon"
                   >
                     {datas && datas.common.current} Amp
                   </p>
                 </div>
-                <div className="flex flex-col pl-8 xl:pl-12">
+                <div className="flex flex-col pl-8 xl:pl-16">
                   <div className="flex justify-start items-center">
                     <img src={Power} alt="Power" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
                       Power
                     </p>
                   </div>
                   <p
-                    className="text-[#DDDDDD] font-semibold text-[28px] ml-4 -mt-3"
+                    className="text-[#DDDDDD] font-semibold text-[28px] xl:text-[32px]  ml-4 -mt-3"
                     id="powerCommon"
                   >
                     {datas && datas.common.power} Kw
@@ -688,12 +729,12 @@ const HomePage = ({
                 <div className="flex flex-col border-r border-[#204D4C] pr-5">
                   <div className="flex justify-start items-center">
                     <img src={KVA} alt="KVA" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
                       KVA
                     </p>
                   </div>
                   <p
-                    className="text-[#DDDDDD] font-semibold text-[28px] ml-4 -mt-3"
+                    className="text-[#DDDDDD] font-semibold text-[28px] xl:text-[32px] ml-4 -mt-3"
                     id="kvaCommon"
                   >
                     {datas && datas.common.kva}
@@ -706,12 +747,12 @@ const HomePage = ({
                       alt="Frequency"
                       className="w-14 h-14"
                     />
-                    <p className="text-[#C37C5A] text-sm font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
                       Frequency
                     </p>
                   </div>
                   <p
-                    className="text-[#DDDDDD] font-semibold text-[28px] ml-4 -mt-3"
+                    className="text-[#DDDDDD] font-semibold text-[28px] xl:text-[32px] ml-4 -mt-3"
                     id="frequencyCommon"
                   >
                     {datas && datas.common.freq} Hz
@@ -722,61 +763,58 @@ const HomePage = ({
           </div>
           <div className="bg-black rounded-md w-[30%]">
             <div className="pt-5 px-5">
-              <p className="text-[#DDDDDD] text-nowrap font-semibold text-lg tracking-wide">
+              <p className="text-[#DDDDDD] text-nowrap font-semibold text-lg xl:text-xl tracking-wide">
                 POWERGEN CONTROLS
               </p>
 
               {/* Cooldown indicator */}
               {isInCooldown && !isOn && (
-                <div className="mt-6 p-2 bg-yellow-500 text-white rounded text-sm">
+                <div className="mt-6 p-2 xl:p-4 bg-yellow-500 text-white rounded text-sm xl:text-base">
                   Cooldown: {cooldownTimeLeft} minute(s) remaining
                 </div>
               )}
 
               {/* Warmup indicator */}
               {isInWarmup && isOn && (
-                <div className="mt-6 p-2 bg-blue-500 text-white rounded text-sm">
+                <div className="mt-6 p-2 xl:p-4 bg-blue-500 text-white rounded text-sm xl:text-base">
                   Warmup: {warmupTimeLeft} minute(s) remaining
                 </div>
               )}
 
               <div className="flex justify-between mt-10 items-center">
                 <span className="grid">
-                  <p className="text-[#C37C5A] text-sm">Running Time</p>
-                  <p className="text-[#DDDDDD] font-semibold text-[28px]">
+                  <p className="text-[#C37C5A] text-sm xl:text-base">Running Time</p>
+                  <p className="text-[#DDDDDD] font-semibold text-[28px] xl:text-[32px]">
                     30 mins
                   </p>
                 </span>
                 <div className="mt-1">
                   {/* Toggle switch with disabled styling during cooldown or warmup */}
                   <div
-                    className={`w-14 h-7 rounded-full relative transition-all duration-300 ${
-                      isOn ? "bg-green-500" : "bg-gray-400"
-                    } ${
-                      (isInCooldown && !isOn) || (isInWarmup && isOn)
+                    className={`w-14 h-7 rounded-full relative transition-all duration-300 ${isOn ? "bg-green-500" : "bg-gray-400"
+                      } ${(isInCooldown && !isOn) || (isInWarmup && isOn)
                         ? "opacity-50 cursor-not-allowed"
                         : "cursor-pointer"
-                    }`}
+                      }`}
                     onClick={
                       (isInCooldown && !isOn) || (isInWarmup && isOn)
                         ? () => {
-                            if (isInCooldown && !isOn) {
-                              showErrorAlert(
-                                `Gensets cannot be turned on yet. Please wait ${cooldownTimeLeft} more minutes.`
-                              );
-                            } else if (isInWarmup && isOn) {
-                              showErrorAlert(
-                                `Gensets cannot be turned off yet. Please wait ${warmupTimeLeft} more minutes.`
-                              );
-                            }
+                          if (isInCooldown && !isOn) {
+                            showErrorAlert(
+                              `Gensets cannot be turned on yet. Please wait ${cooldownTimeLeft} more minutes.`
+                            );
+                          } else if (isInWarmup && isOn) {
+                            showErrorAlert(
+                              `Gensets cannot be turned off yet. Please wait ${warmupTimeLeft} more minutes.`
+                            );
                           }
+                        }
                         : openDialog
                     }
                   >
                     <div
-                      className={`w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${
-                        isOn ? "translate-x-7" : "translate-x-0"
-                      }`}
+                      className={`w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${isOn ? "translate-x-7" : "translate-x-0"
+                        }`}
                     ></div>
                   </div>
                 </div>
@@ -830,15 +868,15 @@ const HomePage = ({
                       )}
                     </div>
                   </div>
-                  <div className="flex gap-2 mt-7">
+                  <div className="flex gap-2 xl:p-4 mt-7">
                     <button
-                      className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 rounded-md text-base font-semibold w-full"
+                      className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
                       onClick={closeDialog}
                     >
                       Cancel
                     </button>
                     <button
-                      className="bg-[#19988B] text-white px-3 py-1 rounded-md text-base font-semibold w-full"
+                      className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
                       onClick={toggleSwitch}
                     >
                       Yes
@@ -935,21 +973,21 @@ const HomePage = ({
           </div>
         </div>
         <div className="flex justify-between mt-5 w-full">
-          <p className="text-[#DDDDDD] text-lg font-semibold tracking-wider">
+          <p className="text-[#DDDDDD] text-lg xl:text-xl font-semibold tracking-wider">
             ELECTRICAL QUALITY PARAMETERS
           </p>
-          <div className="inline-flex text-xs pr-1">
+          <div className="inline-flex text-xs xl:text-sm pr-1">
             <div className="flex text-[#DDDDDD] items-center">
-              <span className="bg-[#0A3D38] px-2 py-2 rounded-l-[4px] text-xs font-normal border-r-2 border-[#0F5B53]">
+              <span className="bg-[#0A3D38] px-2 py-2 rounded-l-[4px] text-xs xl:text-sm font-normal border-r-2 border-[#0F5B53]">
                 Today
               </span>
-              <span className="bg-[#0A3D38] px-2 py-2 text-xs font-normal border-r-2 border-[#0F5B53]">
+              <span className="bg-[#0A3D38] px-2 py-2 text-xs xl:text-sm font-normal border-r-2 border-[#0F5B53]">
                 Last 10 days
               </span>
-              <span className="bg-[#0A3D38] px-2 py-2 text-xs font-normal border-r-2 border-[#0F5B53]">
+              <span className="bg-[#0A3D38] px-2 py-2 text-xs xl:text-sm font-normal border-r-2 border-[#0F5B53]">
                 Last 30 days
               </span>
-              <span className="bg-[#0A3D38] px-2 py-2 rounded-r-[4px] text-xs font-normal">
+              <span className="bg-[#0A3D38] px-2 py-2 rounded-r-[4px] text-xs xl:text-sm font-normal">
                 Last 60 days
               </span>
             </div>
@@ -958,9 +996,9 @@ const HomePage = ({
                 color="#DDDDDD"
                 className="w-3 h-3 font-bold mr-1"
               />
-              <span className="text-xs font-normal">Select Dates</span>
+              <span className="text-xs xl:text-sm font-normal">Select Dates</span>
             </div>
-            <span className="bg-[#0A3D38] px-2 py-2 rounded-[4px] text-[#DDDDDD] text-xs font-normal flex items-center">
+            <span className="bg-[#0A3D38] px-2 py-2 rounded-[4px] text-[#DDDDDD] text-xs xl:text-sm font-normal flex items-center">
               {" "}
               <IoFilter
                 color="#DDDDDD"
@@ -971,203 +1009,634 @@ const HomePage = ({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-5">
-          <Link to={`/generator_a/${id}`} className="text-decoration-none">
-            <div className="mt-8 p-4 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]">
-              <div className="text-[#DDDDDD] text-base font-semibold">
-                Genset-1
+          {/* <Link to={`/generator_a/${id}`} className="text-decoration-none"> */}
+          <div oonClick={(e) => {
+            // Prevent navigate if click was on toggle or its children
+            const isInsideToggle = e.target.closest(".genset-toggle");
+            if (isInsideToggle) {
+              console.log("Toggle clicked, prevent navigation");
+              return;
+            }
+
+            console.log("Card clicked, navigating");
+            navigate(`/generator_a/${id}`);
+          }} className="mt-8 p-4 xl:p-6 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]">
+            <div className="text-[#DDDDDD] text-base font-semibold pb-2">
+              Genset-1
+            </div>
+            <div className="relative grid grid-cols-3 gap-4 text-xs xl:text-sm text-[#C37C5A] pb-4">
+              <div className="flex items-start">
+                <img src={Gen_Image} alt="" className="w-36 h-24 xl:w-40 xl:h-28" />
               </div>
-              <div className="grid grid-cols-3 gap-4 text-xs text-[#C37C5A]">
-                <div className="flex items-start">
-                  <img src={Gen_Image} alt="" className="w-36 h-24" />
-                </div>
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Time} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <div className="text-xs">Running Time</div>
-                    <div className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset1.batteryVoltage} mins
-                    </div>
+              <div className="flex items-end justify-start gap-3">
+                <img src={Time} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <div className="text-xs xl:text-sm">Running Time</div>
+                  <div className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset1.batteryVoltage} mins
                   </div>
                 </div>
-                <div className="flex items-end justify-start gap-3">
+              </div>
+              <div className="flex flex-col justify-between">
+                <div className="flex items-center justify-end gap-4">
+                  {isOn_A ? <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <img src={BreakerClose} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                      <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                        Close
+                      </h3>
+                    </div>
+                  </div>
+
+                    : <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <img src={BreakerOpen} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                        <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                          Open
+                        </h3>
+                      </div>
+                    </div>}
+
+
+                  <div className="flex items-center gap-3">
+                    {/* Cooldown indicator */}
+                    {isInCooldown_A && !isOn_A && (
+                      <div className="absolute right-48 mb-2 px-4 py-2 bg-yellow-500 text-white rounded text-sm xl:text-base w-fit whitespace-nowrap">
+                        Cooldown: {cooldownTimeLeft_A} minute(s) remaining
+                      </div>
+                    )}
+
+
+                    {/* Warmup indicator */}
+                    {isInWarmup_A && isOn_A && (
+                      <div className="absolute right-48 w-fit whitespace-nowrap mb-2 px-4 py-2 bg-blue-500 text-white rounded text-sm xl:text-base">
+                        Warmup: {warmupTimeLeft} minute(s) remaining
+                      </div>
+                    )}
+
+                    {/* Toggle switch with disabled styling during cooldown or warmup */}
+                    <div
+                      className={`genset-toggle w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_A ? "bg-green-500" : "bg-gray-400"
+                        } ${(isInCooldown_A && !isOn_A) || (isInWarmup_A && isOn_A)
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer"
+                        }`}
+                      onClick={(e) => {
+                        //setisToggleClicked_A(true)
+                        e.stopPropagation();
+                        e.preventDefault();
+
+                        if ((isInCooldown_A && !isOn_A) || (isInWarmup_A && isOn_A)) {
+                          if (isInCooldown_A && !isOn_A) {
+                            showErrorAlert_A(`Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft_A} more minutes.`);
+                          } else if (isInWarmup_A && isOn_A) {
+                            showErrorAlert_A(`Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft_A} more minutes.`);
+                          }
+                        } else {
+                          openDialog_A();
+                        }
+                      }}
+                    >
+                      <div
+                        className={`genset-toggle w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${isOn_A ? "translate-x-7" : "translate-x-0"
+                          }`}
+                      ></div>
+                    </div>
+
+
+                    {/* Error Alert */}
+                    {errorAlertOpen_A && (
+                      <div className="fixed top-5 right-5 bg-red-500 text-white p-3 rounded shadow-lg z-50 max-w-md">
+                        {errorMessage_A}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Dialog Alert */}
+                  {showDialog_A && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
+                        <div className="flex justify-between items-center">
+                          <div className="w-10 h-10">
+                            <img
+                              src={Featured_Icon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeDialog_A}
+                          >
+                            x
+                          </button>
+                        </div>
+                        <div className="flex my-5 gap-5 justify-center items-center">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div>
+                            <p className="text-white text-xl font-semibold mt-4">
+                              Are you sure?
+                            </p>
+                            {isOn_A ? (
+                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Stop the genset?
+                              </p>
+                            ) : (
+                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Start the genset?
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-7">
+                          <button
+                            className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={closeDialog_A}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={toggleSwitch_A}
+                          >
+                            Yes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showSuccessDialog_A && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeSuccessDialog_A}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={SuccessFullIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Started Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch off anytime by clicking the power control
+                            in dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showStopDialog_A && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeStopDialog_A}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={StopIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Stopped Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch on anytime by clicking the power control in
+                            dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-end justify-start gap-3 ">
                   <img src={Antenna} alt="" className="w-10 h-10 mb-1.5" />
                   <div className="flex flex-col">
                     <span>Frequency</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
+                    <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
                       {datas && datas.genset1.freq} Hz
                     </span>
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-5 text-xs text-[#C37C5A]">
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Guage} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Engine RPM</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset1.engineRpm}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Cold} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Coolant Temp</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset1.coolerTemp}°C
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Development} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Lube Oil Pressure</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset1.oilPressure} Psi
-                    </span>
-                  </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4 mt-5 text-xs xl:text-sm text-[#C37C5A]">
+              <div className="flex items-end justify-start gap-3">
+                <img src={Guage} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Engine RPM</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset1.engineRpm}
+                  </span>
                 </div>
               </div>
-              <div className="flex text-sm mt-4">
-                <div className="w-1/2 bg-[#0A3D38] p-2 rounded-l-lg gap-5">
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Voltage (V)</span>
-                    <span>{datas && datas.genset1.voltage}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Power (kW)</span>
-                    <span>{datas && datas.genset1.kw}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Power (kVA)</span>
-                    <span>{datas && datas.genset1.kva}</span>
-                  </div>
+              <div className="flex items-end justify-start gap-3">
+                <img src={Cold} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Coolant Temp</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset1.coolerTemp}°C
+                  </span>
                 </div>
-                <div className="w-1/2 bg-[#0F5B53] p-2 rounded-r-lg gap-5">
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Power Factor</span>
-                    <span>{datas && datas.genset1.pf}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Current (A)</span>
-                    <span>{datas && datas.genset1.current}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Engine running hours (Hr)</span>
-                    <span>{datas && datas.genset1.enginerun}</span>
-                  </div>
+              </div>
+              <div className="flex items-end justify-start gap-3">
+                <img src={Development} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Lube Oil Pressure</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset1.oilPressure} Psi
+                  </span>
                 </div>
               </div>
             </div>
-          </Link>
-          <Link to={`/generator_b/${id}`} className="text-decoration-none">
-            {/* <div className="mt-8 p-4 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl opacity-50 hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]"> */}
-            <div className="mt-8 p-4 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]">
-              <div className="text-[#DDDDDD] text-base font-semibold">
-                Genset-2
+            <div className="flex text-sm xl:text-base mt-4">
+              <div className="w-1/2 bg-[#0A3D38] p-2 xl:p-4 rounded-l-lg gap-5">
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Voltage (V)</span>
+                  <span>{datas && datas.genset1.voltage}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Power (kW)</span>
+                  <span>{datas && datas.genset1.kw}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Power (kVA)</span>
+                  <span>{datas && datas.genset1.kva}</span>
+                </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-xs text-[#C37C5A]">
+              <div className="w-1/2 bg-[#0F5B53] p-2 xl:p-4 rounded-r-lg gap-5">
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Power Factor</span>
+                  <span>{datas && datas.genset1.pf}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Current (A)</span>
+                  <span>{datas && datas.genset1.current}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Engine running hours (Hr)</span>
+                  <span>{datas && datas.genset1.enginerun}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* </Link> */}
+          {/* <Link to={`/generator_b/${id}`} className="text-decoration-none"> */}
+          {/* <div className="mt-8 p-4 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl opacity-50 hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]"> */}
+          <div onClick={() => {
+
+            if (isToggleClicked_B) {
+              console.log("Toggle clicked, prevent navigation");
+              return;
+            }
+
+            console.log("Card clicked, navigating");
+            navigate(`/generator_b/${id}`);
+          }} className="mt-8 p-4 xl:p-6 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]">
+            <div className="text-[#DDDDDD] text-base font-semibold pb-2">
+              Genset-2
+            </div>
+            <div className="relative grid grid-cols-3 gap-4 text-xs xl:text-sm text-[#C37C5A] pb-4">
+              <div className="flex flex-col justify-between">
+                <div className="flex items-end justify-start gap-6">
+
+                  <div className="">
+                    {/* Cooldown indicator */}
+                    {isInCooldown_B && !isOn_B && (
+                      <div className="absolute left-44 mb-2 px-4 py-2 bg-yellow-500 text-white rounded text-sm xl:text-base w-fit whitespace-nowrap">
+                        Cooldown: {cooldownTimeLeft_B} minute(s) remaining
+                      </div>
+                    )}
+
+
+                    {/* Warmup indicator */}
+                    {isInWarmup_B && isOn_B && (
+                      <div className="absolute left-44 w-fit whitespace-nowrap mb-2 px-4 py-2 bg-blue-500 text-white rounded text-sm xl:text-base">
+                        Warmup: {warmupTimeLeft_B} minute(s) remaining
+                      </div>
+                    )}
+
+                    {/* Toggle switch with disabled styling during cooldown or warmup */}
+                    <div
+                      className={`w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_B ? "bg-green-500" : "bg-gray-400"
+                        } ${(isInCooldown_B && !isOn_B) || (isInWarmup_B && isOn_B)
+                          ? "opacity-50 cursor-not-allowed"
+                          : "cursor-pointer"
+                        }`}
+                      onClick={(e) => {
+                        setisToggleClicked_B(true)
+                        e.stopPropagation();
+                        e.preventDefault();
+
+                        if ((isInCooldown_B && !isOn_B) || (isInWarmup_B && isOn_B)) {
+                          if (isInCooldown_B && !isOn_B) {
+                            showErrorAlert_B(`Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft_B} more minutes.`);
+                          } else if (isInWarmup_B && isOn_B) {
+                            showErrorAlert_B(`Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft_B} more minutes.`);
+                          }
+                        } else {
+                          openDialog_B();
+                        }
+                      }}
+                    >
+                      <div
+                        className={`w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${isOn_B ? "translate-x-7" : "translate-x-0"
+                          }`}
+                      ></div>
+                    </div>
+
+                    {/* Error Alert */}
+                    {errorAlertOpen_B && (
+                      <div className="fixed top-5 right-5 bg-red-500 text-white p-3 rounded shadow-lg z-50 max-w-md">
+                        {errorMessage_B}
+                      </div>
+                    )}
+                  </div>
+
+                  {isOn_B ? <div className="flex items-center justify-cente">
+                    <div className="flex items-center justify-center gap-2">
+                      <img src={BreakerClose} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                      <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                        Close
+                      </h3>
+                    </div>
+                  </div>
+
+                    : <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <img src={BreakerOpen} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                        <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                          Open
+                        </h3>
+                      </div>
+                    </div>}
+
+
+                  {/* Dialog Alert */}
+                  {showDialog_B && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
+                        <div className="flex justify-between items-center">
+                          <div className="w-10 h-10">
+                            <img
+                              src={Featured_Icon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeDialog_B}
+                          >
+                            x
+                          </button>
+                        </div>
+                        <div className="flex my-5 gap-5 justify-center items-center">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div>
+                            <p className="text-white text-xl font-semibold mt-4">
+                              Are you sure?
+                            </p>
+                            {isOn_B ? (
+                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Stop the genset?
+                              </p>
+                            ) : (
+                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Start the genset?
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-7">
+                          <button
+                            className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={closeDialog_B}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={toggleSwitch_B}
+                          >
+                            Yes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showSuccessDialog_B && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeSuccessDialog_B}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={SuccessFullIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Started Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch off anytime by clicking the power control
+                            in dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showStopDialog_B && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeStopDialog_B}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={StopIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Stopped Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch on anytime by clicking the power control in
+                            dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div className="flex items-end justify-start gap-3">
                   <img src={Time} alt="" className="w-10 h-10 mb-1.5" />
                   <div className="flex flex-col">
-                    <div className="text-xs">Running Time</div>
-                    <div className="text-[#DDDDDD] text-lg font-semibold">
+                    <div className="text-xs xl:text-sm">Running Time</div>
+                    <div className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
                       {datas && datas.genset2.batteryVoltage} mins
                     </div>
                   </div>
                 </div>
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Antenna} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Frequency</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset2.freq} Hz
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <img
-                    src={Gen_Image}
-                    alt=""
-                    className="w-36 h-24 transform -scale-x-100"
-                  />
+              </div>
+              <div className="flex items-end justify-start gap-3">
+                <img src={Antenna} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Frequency</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset2.freq} Hz
+                  </span>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 mt-5 text-xs text-[#C37C5A]">
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Guage} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Engine RPM</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset2.engineRpm}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Cold} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Coolant Temp</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset2.coolerTemp}°C
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-end justify-start gap-3">
-                  <img src={Development} alt="" className="w-10 h-10 mb-1.5" />
-                  <div className="flex flex-col">
-                    <span>Lube Oil Pressure</span>
-                    <span className="text-[#DDDDDD] text-lg font-semibold">
-                      {datas && datas.genset2.oilPressure} Psi
-                    </span>
-                  </div>
+              <div className="flex justify-end">
+                <img
+                  src={Gen_Image}
+                  alt=""
+                  className="w-36 h-24 xl:w-40 xl:h-28 transform -scale-x-100"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4 mt-5 text-xs xl:text-sm text-[#C37C5A]">
+              <div className="flex items-end justify-start gap-3">
+                <img src={Guage} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Engine RPM</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset2.engineRpm}
+                  </span>
                 </div>
               </div>
-              <div className="flex text-sm mt-4">
-                <div className="w-1/2 bg-[#0A3D38] p-2 rounded-l-lg gap-5">
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Voltage (V)</span>
-                    <span>{datas && datas.genset2.voltage} </span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Power (kW)</span>
-                    <span>{datas && datas.genset2.kw}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Power (kVA)</span>
-                    <span>{datas && datas.genset2.kva}</span>
-                  </div>
+              <div className="flex items-end justify-start gap-3">
+                <img src={Cold} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Coolant Temp</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset2.coolerTemp}°C
+                  </span>
                 </div>
-                <div className="w-1/2 bg-[#0F5B53] p-2 rounded-r-lg gap-5">
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Power Factor</span>
-                    <span>{datas && datas.genset2.pf}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Current (A)</span>
-                    <span>{datas && datas.genset2.current}</span>
-                  </div>
-                  <div className="flex justify-between p-2 text-[#CACCCC] font-medium text-sm">
-                    <span>Engine running hours (Hr)</span>
-                    <span>{datas && datas.genset2.enginerun}</span>
-                  </div>
+              </div>
+              <div className="flex items-end justify-start gap-3">
+                <img src={Development} alt="" className="w-10 h-10 mb-1.5" />
+                <div className="flex flex-col">
+                  <span>Lube Oil Pressure</span>
+                  <span className="text-[#DDDDDD] text-lg xl:text-xl font-semibold">
+                    {datas && datas.genset2.oilPressure} Psi
+                  </span>
                 </div>
               </div>
             </div>
-          </Link>
+            <div className="flex text-sm xl:text-base mt-4">
+              <div className="w-1/2 bg-[#0A3D38] p-2 xl:p-4 rounded-l-lg gap-5">
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Voltage (V)</span>
+                  <span>{datas && datas.genset2.voltage} </span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Power (kW)</span>
+                  <span>{datas && datas.genset2.kw}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Power (kVA)</span>
+                  <span>{datas && datas.genset2.kva}</span>
+                </div>
+              </div>
+              <div className="w-1/2 bg-[#0F5B53] p-2 xl:p-4 rounded-r-lg gap-5">
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Power Factor</span>
+                  <span>{datas && datas.genset2.pf}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Current (A)</span>
+                  <span>{datas && datas.genset2.current}</span>
+                </div>
+                <div className="flex justify-between p-2 xl:p-3 text-[#CACCCC] font-medium text-sm xl:text-base">
+                  <span>Engine running hours (Hr)</span>
+                  <span>{datas && datas.genset2.enginerun}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* </Link> */}
         </div>
         <div className="flex justify-between mt-10 w-full">
-          <p className="text-lg font-semibold text-[#DDDDDD] tracking-wider">
+          <p className="text-lg xl:text-xl font-semibold text-[#DDDDDD] tracking-wider">
             GENSET PARAMETERS VIEW
           </p>
-          <div className="inline-flex text-xs items-center">
+          <div className="inline-flex text-xs xl:text-sm items-center">
             <span className="text-[#9F9E9E] px-2">
               Last Updated on 29-07-2023 | 10:20 A.M
             </span>
             <div className="flex text-[#DDDDDD] items-center">
-              <span className="bg-[#0A3D38] px-2 py-2 rounded-l-[4px] text-xs font-normal border-r-2 border-[#0F5B53]">
+              <span className="bg-[#0A3D38] px-2 py-2 rounded-l-[4px] text-xs xl:text-sm font-normal border-r-2 border-[#0F5B53]">
                 Today
               </span>
-              <span className="bg-[#0A3D38] px-2 py-2 text-xs font-normal">
+              <span className="bg-[#0A3D38] px-2 py-2 text-xs xl:text-sm font-normal">
                 Last 60 days
               </span>
             </div>

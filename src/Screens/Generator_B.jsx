@@ -51,7 +51,7 @@ const Generator_B = ({
   showErrorAlert_B
 }) => {
   const [isOn, setIsOn] = useState(false);
- 
+
   const [alertOpen, setAlertOpen] = useState(false);
   const [deviceInfoOpen, setDeviceInfoOpen] = useState(false);
 
@@ -288,7 +288,7 @@ const Generator_B = ({
               </div>
             </div>
 
-          {isOn_B ?   <div className="flex items-center justify-center">
+            {isOn_B ? <div className="flex items-center justify-center">
               <div className="flex items-center justify-center gap-2">
                 <img src={BreakerClose} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
                 <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
@@ -297,14 +297,14 @@ const Generator_B = ({
               </div>
             </div>
 
-          :  <div className="flex items-center justify-center">
-              <div className="flex items-center justify-center gap-2">
-                <img src={BreakerOpen} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
-                <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
-                  Open
-                </h3>
-              </div>
-            </div> }
+              : <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center gap-2">
+                  <img src={BreakerOpen} alt="battery" className="w-2 h-5 xl:w-3 xl:h-6" />
+                  <h3 className="text-[#DDDDDD] ml-1 mr-5 whitespace-nowrap text-sm xl:text-base font-normal">
+                    Open
+                  </h3>
+                </div>
+              </div>}
 
 
             <div className="mt-1">

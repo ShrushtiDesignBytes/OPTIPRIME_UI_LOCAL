@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import { Link, useParams } from "react-router-dom";
 import { CiUser } from "react-icons/ci";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { RiArrowDropDownLine } from "react-icons/ri";
+import { RiArrowDropDownLine } from "react-icons/ri"; 
 import Image_1 from "../assets/Image (1).png";
 import Thermometer from "../assets/thermometer 1.png";
 import Featured_Icon from "../assets/Featured icon.png";
@@ -368,7 +368,7 @@ const Generator_A = ({
                       className="text-white w-8 h-8"
                       onClick={closeDialog_A}
                     >
-                      x
+                      x 
                     </button>
                   </div>
                   <div className="flex my-5 gap-5 justify-center items-center">

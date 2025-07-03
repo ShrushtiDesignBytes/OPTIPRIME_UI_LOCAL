@@ -87,7 +87,8 @@ const HomePage = ({
   const [warmupTimeLeft, setWarmupTimeLeft] = useState(0);
 
   //const [isToggleClicked_A, setisToggleClicked_A] = useState(false);
-  const [isToggleClicked_B, setisToggleClicked_B] = useState(false);
+  //const [isToggleClicked_B, setisToggleClicked_B] = useState(false);
+
   const myDatavizRef = useRef(null);
   const location = useLocation();
 
@@ -685,7 +686,7 @@ const HomePage = ({
                 <div className="flex flex-col border-r border-[#204D4C] pr-5">
                   <div className="flex justify-start items-center">
                     <img src={Voltage} alt="Voltage" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base font-medium -ml-2">
                       Voltage
                     </p>
                   </div>
@@ -699,7 +700,7 @@ const HomePage = ({
                 <div className="flex flex-col border-r border-[#204D4C] pl-8 pr-8 xl:pl-14 xl:pr-16">
                   <div className="flex justify-start items-center">
                     <img src={Current} alt="Current" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base font-medium -ml-2">
                       Current
                     </p>
                   </div>
@@ -713,7 +714,7 @@ const HomePage = ({
                 <div className="flex flex-col pl-8 xl:pl-16">
                   <div className="flex justify-start items-center">
                     <img src={Power} alt="Power" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base font-medium -ml-2">
                       Power
                     </p>
                   </div>
@@ -729,7 +730,7 @@ const HomePage = ({
                 <div className="flex flex-col border-r border-[#204D4C] pr-5">
                   <div className="flex justify-start items-center">
                     <img src={KVA} alt="KVA" className="w-14 h-14" />
-                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base font-medium -ml-2">
                       KVA
                     </p>
                   </div>
@@ -747,7 +748,7 @@ const HomePage = ({
                       alt="Frequency"
                       className="w-14 h-14"
                     />
-                    <p className="text-[#C37C5A] text-sm xl:text-base xl:text-base font-medium -ml-2">
+                    <p className="text-[#C37C5A] text-sm xl:text-base font-medium -ml-2">
                       Frequency
                     </p>
                   </div>
@@ -858,11 +859,11 @@ const HomePage = ({
                         Are you sure?
                       </p>
                       {isOn ? (
-                        <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
+                        <p className="text-[#CACCCC] xl:text-lg font-normal mt-1 text-nowrap">
                           Do you really want to Stop the genset?
                         </p>
                       ) : (
-                        <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
+                        <p className="text-[#CACCCC] xl:text-lg font-normal mt-1 text-nowrap">
                           Do you really want to Start the genset?
                         </p>
                       )}
@@ -1010,9 +1011,142 @@ const HomePage = ({
         </div>
         <div className="grid grid-cols-2 gap-4 mb-5">
           {/* <Link to={`/generator_a/${id}`} className="text-decoration-none"> */}
-          <div oonClick={(e) => {
+
+
+          
+           {/* Dialog Alert */}
+                  {showDialog_A && (
+                    <div className="genset-toggle-A fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
+                        <div className="flex justify-between items-center">
+                          <div className="w-10 h-10">
+                            <img
+                              src={Featured_Icon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeDialog_A}
+                          >
+                            x
+                          </button>
+                        </div>
+                        <div className="flex my-5 gap-5 justify-center items-center">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div>
+                            <p className="text-white text-xl font-semibold mt-4">
+                              Are you sure?
+                            </p>
+                            {isOn_A ? (
+                              <p className="text-[#CACCCC] xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Stop the genset?
+                              </p>
+                            ) : (
+                              <p className="text-[#CACCCC] xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Start the genset?
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-7">
+                          <button
+                            className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={closeDialog_A}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={toggleSwitch_A}
+                          >
+                            Yes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showSuccessDialog_A && (
+                    <div className="genset-toggle-A fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeSuccessDialog_A}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={SuccessFullIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Started Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch off anytime by clicking the power control
+                            in dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showStopDialog_A && (
+                    <div className={`genset-toggle-A fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50`}>
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeStopDialog_A}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={StopIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Stopped Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch on anytime by clicking the power control in
+                            dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+        
+          <div onClick={(e) => { 
             // Prevent navigate if click was on toggle or its children
-            const isInsideToggle = e.target.closest(".genset-toggle");
+            const isInsideToggle = e.target.closest(".genset-toggle-A"); 
             if (isInsideToggle) {
               console.log("Toggle clicked, prevent navigation");
               return;
@@ -1020,7 +1154,10 @@ const HomePage = ({
 
             console.log("Card clicked, navigating");
             navigate(`/generator_a/${id}`);
-          }} className="mt-8 p-4 xl:p-6 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]">
+          }} className="mt-8 p-4 xl:p-6 rounded-lg bg-[#030F0E] w-full relative">
+        
+             <div className={`transition-opacity duration-300 ${!isOn_A ? "opacity-40" : "opacity-100"}`}>
+
             <div className="text-[#DDDDDD] text-base font-semibold pb-2">
               Genset-1
             </div>
@@ -1076,15 +1213,15 @@ const HomePage = ({
 
                     {/* Toggle switch with disabled styling during cooldown or warmup */}
                     <div
-                      className={`genset-toggle w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_A ? "bg-green-500" : "bg-gray-400"
+                      className={`genset-toggle-A w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_A ? "bg-green-500" : "bg-gray-400"
                         } ${(isInCooldown_A && !isOn_A) || (isInWarmup_A && isOn_A)
                           ? "opacity-50 cursor-not-allowed"
                           : "cursor-pointer"
                         }`}
-                      onClick={(e) => {
+                      onClick={() => {
                         //setisToggleClicked_A(true)
-                        e.stopPropagation();
-                        e.preventDefault();
+                        //e.stopPropagation();
+                        //e.preventDefault();
 
                         if ((isInCooldown_A && !isOn_A) || (isInWarmup_A && isOn_A)) {
                           if (isInCooldown_A && !isOn_A) {
@@ -1098,7 +1235,7 @@ const HomePage = ({
                       }}
                     >
                       <div
-                        className={`genset-toggle w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${isOn_A ? "translate-x-7" : "translate-x-0"
+                        className={`w-7 h-7 bg-white rounded-full absolute top-0 transition-all duration-300 ${isOn_A ? "translate-x-7" : "translate-x-0"
                           }`}
                       ></div>
                     </div>
@@ -1111,136 +1248,9 @@ const HomePage = ({
                       </div>
                     )}
                   </div>
+                  
 
-                  {/* Dialog Alert */}
-                  {showDialog_A && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
-                        <div className="flex justify-between items-center">
-                          <div className="w-10 h-10">
-                            <img
-                              src={Featured_Icon}
-                              alt="Icon"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <button
-                            className="text-white w-8 h-8"
-                            onClick={closeDialog_A}
-                          >
-                            x
-                          </button>
-                        </div>
-                        <div className="flex my-5 gap-5 justify-center items-center">
-                          <img
-                            src={MaskGroup}
-                            alt="Mask Group"
-                            className="w-36 h-28 xl:w-40 xl:h-32"
-                          />
-                          <div>
-                            <p className="text-white text-xl font-semibold mt-4">
-                              Are you sure?
-                            </p>
-                            {isOn_A ? (
-                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
-                                Do you really want to Stop the genset?
-                              </p>
-                            ) : (
-                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
-                                Do you really want to Start the genset?
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex gap-2 mt-7">
-                          <button
-                            className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
-                            onClick={closeDialog_A}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
-                            onClick={toggleSwitch_A}
-                          >
-                            Yes
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {showSuccessDialog_A && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
-                        <div className="flex justify-end">
-                          <button
-                            className="text-white w-8 h-8"
-                            onClick={closeSuccessDialog_A}
-                          >
-                            x
-                          </button>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-4">
-                          <img
-                            src={MaskGroup}
-                            alt="Mask Group"
-                            className="w-36 h-28 xl:w-40 xl:h-32"
-                          />
-                          <div className="w-10 h-10">
-                            <img
-                              src={SuccessFullIcon}
-                              alt="Icon"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <div className="font-semibold text-xl text-white">
-                            Genset Started Succesfully!
-                          </div>
-                          <div className="font-normal text-[#CACCCC] text-base text-center">
-                            You can switch off anytime by clicking the power control
-                            in dashboard
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {showStopDialog_A && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
-                        <div className="flex justify-end">
-                          <button
-                            className="text-white w-8 h-8"
-                            onClick={closeStopDialog_A}
-                          >
-                            x
-                          </button>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-4">
-                          <img
-                            src={MaskGroup}
-                            alt="Mask Group"
-                            className="w-36 h-28 xl:w-40 xl:h-32"
-                          />
-                          <div className="w-10 h-10">
-                            <img
-                              src={StopIcon}
-                              alt="Icon"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <div className="font-semibold text-xl text-white">
-                            Genset Stopped Succesfully!
-                          </div>
-                          <div className="font-normal text-[#CACCCC] text-base text-center">
-                            You can switch on anytime by clicking the power control in
-                            dashboard
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                 
                 </div>
                 <div className="flex items-end justify-start gap-3 ">
                   <img src={Antenna} alt="" className="w-10 h-10 mb-1.5" />
@@ -1253,6 +1263,8 @@ const HomePage = ({
                 </div>
               </div>
             </div>
+            
+            
             <div className="grid grid-cols-3 gap-4 mt-5 text-xs xl:text-sm text-[#C37C5A]">
               <div className="flex items-end justify-start gap-3">
                 <img src={Guage} alt="" className="w-10 h-10 mb-1.5" />
@@ -1313,19 +1325,162 @@ const HomePage = ({
               </div>
             </div>
           </div>
+          </div>
+          
           {/* </Link> */}
           {/* <Link to={`/generator_b/${id}`} className="text-decoration-none"> */}
           {/* <div className="mt-8 p-4 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl opacity-50 hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]"> */}
-          <div onClick={() => {
 
-            if (isToggleClicked_B) {
+
+          {/* Dialog Alert */}
+                  {showDialog_B && (
+                    <div className="genset-toggle-B fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
+                        <div className="flex justify-between items-center">
+                          <div className="w-10 h-10">
+                            <img
+                              src={Featured_Icon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeDialog_B}
+                          >
+                            x
+                          </button>
+                        </div>
+                        <div className="flex my-5 gap-5 justify-center items-center">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div>
+                            <p className="text-white text-xl font-semibold mt-4">
+                              Are you sure?
+                            </p>
+                            {isOn_B ? (
+                              <p className="text-[#CACCCC] xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Stop the genset?
+                              </p>
+                            ) : (
+                              <p className="text-[#CACCCC] xl:text-lg font-normal mt-1 text-nowrap">
+                                Do you really want to Start the genset?
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-7">
+                          <button
+                            className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={closeDialog_B}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
+                            onClick={toggleSwitch_B}
+                          >
+                            Yes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showSuccessDialog_B && (
+                    <div className={`genset-toggle-B fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50`}>
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeSuccessDialog_B}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={SuccessFullIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Started Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch off anytime by clicking the power control
+                            in dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {showStopDialog_B && (
+                    <div className="genset-toggle-B fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
+                        <div className="flex justify-end">
+                          <button
+                            className="text-white w-8 h-8"
+                            onClick={closeStopDialog_B}
+                          >
+                            x
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4">
+                          <img
+                            src={MaskGroup}
+                            alt="Mask Group"
+                            className="w-36 h-28 xl:w-40 xl:h-32"
+                          />
+                          <div className="w-10 h-10">
+                            <img
+                              src={StopIcon}
+                              alt="Icon"
+                              className="w-full h-full"
+                            />
+                          </div>
+                          <div className="font-semibold text-xl text-white">
+                            Genset Stopped Succesfully!
+                          </div>
+                          <div className="font-normal text-[#CACCCC] text-base text-center">
+                            You can switch on anytime by clicking the power control in
+                            dashboard
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+          <div onClick={(e) => { 
+
+            // Prevent navigate if click was on toggle or its children
+            const isInsideToggle = e.target.closest(".genset-toggle-B"); 
+            if (isInsideToggle) {
               console.log("Toggle clicked, prevent navigation");
               return;
             }
+            /* if (isToggleClicked_B) {
+              console.log("Toggle clicked, prevent navigation");
+              return;
+            } */
 
             console.log("Card clicked, navigating");
             navigate(`/generator_b/${id}`);
-          }} className="mt-8 p-4 xl:p-6 rounded-lg bg-[#030F0E] w-full transition-all duration-200 hover:shadow-[#204D4C] hover:shadow-2xl hover:bg-gradient-to-tl hover:from-[#030F0E] hover:via-[#030F0E] hover:via-60% hover:to-[#204D4C]">
+          }} className="mt-8 p-4 xl:p-6 rounded-lg bg-[#030F0E] w-full relative">
+
+          <div className={`transition-opacity duration-300 ${!isOn_B ? "opacity-40" : "opacity-100"}`}>
+
             <div className="text-[#DDDDDD] text-base font-semibold pb-2">
               Genset-2
             </div>
@@ -1351,21 +1506,22 @@ const HomePage = ({
 
                     {/* Toggle switch with disabled styling during cooldown or warmup */}
                     <div
-                      className={`w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_B ? "bg-green-500" : "bg-gray-400"
+                      className={`toggle-switch-B genset-toggle w-14 h-7 rounded-full relative transition-all duration-300 ${isOn_B ? "bg-green-500" : "bg-gray-400"
                         } ${(isInCooldown_B && !isOn_B) || (isInWarmup_B && isOn_B)
                           ? "opacity-50 cursor-not-allowed"
                           : "cursor-pointer"
                         }`}
                       onClick={(e) => {
-                        setisToggleClicked_B(true)
+                        //isToggleClicked_B.current = true;
+                        //setisToggleClicked_B(true)
                         e.stopPropagation();
-                        e.preventDefault();
-
+                        //e.preventDefault();
+                        
                         if ((isInCooldown_B && !isOn_B) || (isInWarmup_B && isOn_B)) {
                           if (isInCooldown_B && !isOn_B) {
-                            showErrorAlert_B(`Genset 1 cannot be turned on yet. Please wait ${cooldownTimeLeft_B} more minutes.`);
+                            showErrorAlert_B(`Genset 2 cannot be turned on yet. Please wait ${cooldownTimeLeft_B} more minutes.`);
                           } else if (isInWarmup_B && isOn_B) {
-                            showErrorAlert_B(`Genset 1 cannot be turned off yet. Please wait ${warmupTimeLeft_B} more minutes.`);
+                            showErrorAlert_B(`Genset 2 cannot be turned off yet. Please wait ${warmupTimeLeft_B} more minutes.`);
                           }
                         } else {
                           openDialog_B();
@@ -1405,135 +1561,7 @@ const HomePage = ({
                     </div>}
 
 
-                  {/* Dialog Alert */}
-                  {showDialog_B && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-auto">
-                        <div className="flex justify-between items-center">
-                          <div className="w-10 h-10">
-                            <img
-                              src={Featured_Icon}
-                              alt="Icon"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <button
-                            className="text-white w-8 h-8"
-                            onClick={closeDialog_B}
-                          >
-                            x
-                          </button>
-                        </div>
-                        <div className="flex my-5 gap-5 justify-center items-center">
-                          <img
-                            src={MaskGroup}
-                            alt="Mask Group"
-                            className="w-36 h-28 xl:w-40 xl:h-32"
-                          />
-                          <div>
-                            <p className="text-white text-xl font-semibold mt-4">
-                              Are you sure?
-                            </p>
-                            {isOn_B ? (
-                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
-                                Do you really want to Stop the genset?
-                              </p>
-                            ) : (
-                              <p className="text-[#CACCCC] text-base xl:text-lg font-normal mt-1 text-nowrap">
-                                Do you really want to Start the genset?
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex gap-2 mt-7">
-                          <button
-                            className="bg-[#CACCCC] text-[#7A7F7F] px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
-                            onClick={closeDialog_B}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="bg-[#19988B] text-white px-3 py-1 xl:py-3 rounded-md text-base font-semibold w-full"
-                            onClick={toggleSwitch_B}
-                          >
-                            Yes
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {showSuccessDialog_B && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
-                        <div className="flex justify-end">
-                          <button
-                            className="text-white w-8 h-8"
-                            onClick={closeSuccessDialog_B}
-                          >
-                            x
-                          </button>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-4">
-                          <img
-                            src={MaskGroup}
-                            alt="Mask Group"
-                            className="w-36 h-28 xl:w-40 xl:h-32"
-                          />
-                          <div className="w-10 h-10">
-                            <img
-                              src={SuccessFullIcon}
-                              alt="Icon"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <div className="font-semibold text-xl text-white">
-                            Genset Started Succesfully!
-                          </div>
-                          <div className="font-normal text-[#CACCCC] text-base text-center">
-                            You can switch off anytime by clicking the power control
-                            in dashboard
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {showStopDialog_B && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-[#0A3D38] p-6 rounded-md shadow-lg w-1/3">
-                        <div className="flex justify-end">
-                          <button
-                            className="text-white w-8 h-8"
-                            onClick={closeStopDialog_B}
-                          >
-                            x
-                          </button>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-4">
-                          <img
-                            src={MaskGroup}
-                            alt="Mask Group"
-                            className="w-36 h-28 xl:w-40 xl:h-32"
-                          />
-                          <div className="w-10 h-10">
-                            <img
-                              src={StopIcon}
-                              alt="Icon"
-                              className="w-full h-full"
-                            />
-                          </div>
-                          <div className="font-semibold text-xl text-white">
-                            Genset Stopped Succesfully!
-                          </div>
-                          <div className="font-normal text-[#CACCCC] text-base text-center">
-                            You can switch on anytime by clicking the power control in
-                            dashboard
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  
                 </div>
                 <div className="flex items-end justify-start gap-3">
                   <img src={Time} alt="" className="w-10 h-10 mb-1.5" />
@@ -1623,6 +1651,7 @@ const HomePage = ({
             </div>
           </div>
           {/* </Link> */}
+        </div>
         </div>
         <div className="flex justify-between mt-10 w-full">
           <p className="text-lg xl:text-xl font-semibold text-[#DDDDDD] tracking-wider">
